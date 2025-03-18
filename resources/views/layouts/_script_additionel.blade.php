@@ -476,23 +476,25 @@ $.get("/modificationVente/"+idvente, {
 }, function(datta) {
     var tables = datta;
     console.log("tabless", tables); 
-
+    
     $('#addedRows').attr("style", "display:block;");
 
     for ( i = 0; i < tables.length; i++) { 
      rowCount++;
-     let idpro = tables[i]["produit_id"];
-     //console.log(idpro);
-     
+     var idpro = tables[i]["produit_id"];
+     console.log(idpro);
+    
+       
+  
      
    content+='<div class="row" style="border:1px solid grey;"  id="rowCount' + rowCount +
-            '"><div class="col-md-3"><label for="checkin">Produit</label><select onkeyup="calculTotal('+rowCount+')" onclick="calculTotal('+rowCount+')" type="text" id="libelle' + rowCount +
+            '"><div class="col-md-3"><label for="checkin">Produit</label><select  onkeyup="calculTotal('+rowCount+')" onclick="calculTotal('+rowCount+')" type="text" id="libelle' + rowCount +
             '" name="libelle' + rowCount + '" num="'+rowCount+'" required class="form-control  idarticle">' +
-            '@foreach($produits as $produit) <option  {{ '+idpro+' === $produit->id ? "selected" : ''}} value="{{$produit->id}}"> {{$produit->Designation}}</option> @endforeach </select></div>' +
+            '@foreach($produits as $produit) <option value="{{$produit->id}}"> {{$produit->Designation}}</option> @endforeach </select></div>' +
             '<div class="col-md-2"><label for="checkin">Qte Achat</label><input type="number" value="' + tables[i]["QteVente"] + '"  id="qteachat' + rowCount + '"  onkeyup="mcalculTotal('+rowCount+')" onclick="mcalculTotal('+rowCount+')"  class="form-control"></div>' +
             '<div class="col-md-3"><label for="checkin">Prix Achat</label><input type="text" readonly value="' + tables[i]["PrixVente"] + '" id="prixachat' + rowCount + '" class="form-control"></div>' +
             '<div class="col-md-3"><label for="checkin">Total</label><input type="number" readonly value="' + tables[i]["MontantVente"] + '" readonly  id="total' + rowCount + '" class="form-control"></div>'+
-            '<div class="col-md-1" style="margin-top:35px;" ><a href="javascript:void(0);" onclick="remove(' +
+            '<div class="col-md-1" style="margin-top:35px;" ><a href="javascript:void(0);" onclick="mremove(' +
             rowCount + ');">X</a></div></div></div>' +
             '<input type="hidden" name="compteur" value="' + rowCount + '">';
             
@@ -501,7 +503,38 @@ $.get("/modificationVente/"+idvente, {
     };
 
 $("#addedRows").html(content);
+
+setTimeout(() => {
+    let selectElement = document.getElementById('libelle' + rowCount);
+    selectElement.querySelectorAll('option').forEach(option => {
+        if (option.value == idpro) {
+            option.selected = true;
+        }
+    });
+}, 0);
+
 });
 
 })
+
+function mremove(removeNum) {
+        mntttc=0;
+        
+        var total=document.getElementById('total'+removeNum).value;
+        somme-=(total ? total : 0);
+        mntttc=somme-document.getElementById('remise').value + ((somme-(document.getElementById('remise').value))*(document.getElementById('tva').value));
+        $("#vue_totalht").val(Number(somme).toLocaleString());
+        $("#totalht").val(somme);
+        $("#vue_totalttc").val(Number(mntttc).toLocaleString());
+        $("#totalttc").val(mntttc);
+
+        solde=  parseFloat((document.getElementById('totalttc').value-(document.getElementById('avance').value)) ) ;
+
+        $("#vue_solde").val(Number(solde).toLocaleString());
+        $("#solde").val(solde);
+
+        jQuery('#rowCount' + removeNum).remove();
+        rowCount--;
+
+    }
   </script>
