@@ -513,6 +513,21 @@ setTimeout(() => {
     });
 }, 0);
 
+
+$(".idarticle").change(function(){
+                var num = $(this).attr("num");
+                var idarticle = $(this).val();
+                console.log("idart",num,idarticle);
+        $.get("/rechercheArticle/"+idarticle,function(rep){ 
+          
+          ;
+             
+                     console.log("rep",rep);
+                     
+                     $("#prixachat"+num).val(rep.rep);
+                });
+        
+            });
 });
 
 })

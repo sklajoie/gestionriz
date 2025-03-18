@@ -36,6 +36,7 @@ Route::get('/Ventes', [VentesController::class, 'listeVentes'])->name('Ventes');
 // Route::get('/recuperations', [VentesController::class, 'recuperations'])->name('recuperations');
 Route::match(['get', 'post'], '/recuperations', [VentesController::class, 'recuperations'])->name('recuperations');
 Route::get('/modificationVente/{id}', [VentesController::class, 'modificationvente'])->name('modificationVente');
+Route::get('/rechercheArticle/{id}', [VentesController::class, 'recherchearticle'])->name('rechercheArticle');
 Route::get('/Registre-vente', [VentesController::class, 'registrevente'])->name('Registre-vente');
 Route::get('/Recherche-Registre', [VentesController::class, 'rechercheregistre'])->name('Recherche-Registre');
 

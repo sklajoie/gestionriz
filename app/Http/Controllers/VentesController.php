@@ -167,6 +167,13 @@ class VentesController extends Controller
 
         return response()->json($datta);
     }
+    public function recherchearticle($id)
+    {
+        //$rep = Produits::select('Prix')->where('id', $id)->first();
+        
+        $rep = Produits::where('id', $id)->value('Prix');
+        return response()->json(['rep' => $rep]);
+    }
 
     public function listeVentes()
     {
