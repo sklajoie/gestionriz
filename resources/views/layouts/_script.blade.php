@@ -119,8 +119,9 @@
     }
   }
 
-  function calculTotal() {
+  function calculTotalcmd() {
     let total = 0; // Initialisation du total
+    let totalApro = 0; // Initialisation du total
     const table = document.getElementById("commandetbl"); // Référence au tableau principal
 
     // Parcourir toutes les lignes du tableau à partir de la deuxième ligne (ignorant l'en-tête)
@@ -130,15 +131,20 @@
         // Récupérer les valeurs de "Prix Achat" et "Quantité Commandée" dans la ligne actuelle
         let prixAchat = parseFloat(row.cells[3].querySelector("input").value);
         let qteCmd = parseFloat(row.cells[1].querySelector("input").value);
+        let qteAPro = parseFloat(row.cells[2].querySelector("input").value);
 
         // Ajouter au total uniquement si les valeurs sont valides
         if (!isNaN(prixAchat) && !isNaN(qteCmd)) {
             total += prixAchat * qteCmd;
         }
+        if (!isNaN(prixAchat) && !isNaN(qteAPro)) {
+            totalApro += prixAchat * qteAPro;
+        }
     }
 
     // Afficher le montant total dans le champ "montant"
-    document.getElementById("montant").value = total.toFixed(2); // Formater avec deux décimales
+    document.getElementById("montantcmd").value = total.toFixed(2); // Formater avec deux décimales
+    document.getElementById("montantapro").value = totalApro.toFixed(2); // Formater avec deux décimales
 
     console.log("Montant total : " + total);
 }

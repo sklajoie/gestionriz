@@ -140,9 +140,73 @@ class VentesController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Ventes $ventes)
+    public function update(Request $request,$id)
     {
-        //
+        $this->validate($request,[
+            'nqte' => 'required',
+            'idproduit' => 'required',
+           ]);
+
+           
+
+           $modif=Ventes::findOrFail($id);
+           $reference=$modif->Reference;
+
+           $modifdetailv=DetailVentes::where('vente_id',$id)->get();
+           foreach($modifdetailv as $modifdetaiqte)
+           {
+             $produitqte=Produits::where('id',$modifdetaiqte->produit_id)->first();
+             $qteprod=$produitqte->Stock;
+             $lastprod = $modifdetaiqte->QteVente;
+             $newprod = $lastprod + $qteprod;
+             $produitqte->update(['Stock'=> $newprod]);
+           }
+
+             $etat="SOLDE";
+             if($request->solde >0){$etat="NON SOLDE";}
+             
+             $modif->update([
+            'Montant'=> $request->totalttc,
+            'Avance'=> $request->avance,
+            'Solde'=> $request->solde,
+            'Client'=> $request->client,
+            'Contact'=> $request->contant,
+            'Tht'=> $request->totalht,
+            'Remise'=> $request->remise,
+            'Tva'=> $request->tva,
+            'Etat'=> $etat,
+            'user_id'=> Auth::user()->id,
+           ]);
+           foreach($modifdetailv as $modifdetaiqte)
+           {
+             $produitqte=DetailVentes::where('id',$modifdetaiqte->id)->delete();
+           }
+
+           $i=0;
+           foreach($request->idproduit as $idproduit[])
+           {
+
+           DetailVentes::create([
+            'Reference'=> $reference,
+            'QteVente'=> $request->nqte[$i],
+            'vente_id'=> $id,
+            'PrixVente'=> $request->myDataPrix[$i],
+            'MontantVente'=> $request->total[$i],
+            'produit_id'=> $idproduit[$i],
+           ]);
+
+           $modif=Produits::findOrFail($idproduit[$i]);
+           $laststock = $modif->Stock;
+           $newstock = $laststock - $request->nqte[$i];
+           $modif->update(['Stock'=> $newstock]);
+
+           $i++;
+        }
+        $versmt= Versements::where('Reference', $reference)->first();
+        $versmt->update(['Montant'=> $request->avance,'user_id'=> Auth::user()->id,]);
+
+
+           return redirect()->back()->with('success', "l'Enregistrement a été effectué avec success");
     }
 
     /**

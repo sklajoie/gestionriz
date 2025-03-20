@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class DetailCommandes extends Model
 {
-    protected $fillable = [ 'Reference','Qte','commande_id','produit_id','user_id','prixachat' ];
+    protected $fillable = [ 'Reference','Qte','QteApro','commande_id','produit_id','user_id','prixachat' ];
 
     public function commande(){
         return $this->belongsTo(Commandes::class);

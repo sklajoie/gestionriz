@@ -424,29 +424,29 @@ $(".taxetva").change(function() {
 
   //////////modification vente
 
-  function mcalculTotal(pNum){
-      last=document.getElementById('total'+pNum).value;
-      document.getElementById('total'+pNum).value =  parseFloat(document.getElementById('prixachat'+pNum).value * document.getElementById('qteachat'+pNum).value);
-      diff = parseFloat(document.getElementById('total'+pNum).value)-last;
+//   function mcalculTotal(pNum){
+//       last=document.getElementById('total'+pNum).value;
+//       document.getElementById('total'+pNum).value =  parseFloat(document.getElementById('prixachat'+pNum).value * document.getElementById('qteachat'+pNum).value);
+//       diff = parseFloat(document.getElementById('total'+pNum).value)-last;
    
-      somme += diff;
+//       somme += diff;
   
-      $("#vue_totalht").val(Number(somme).toLocaleString());
-      $("#totalht").val(somme);
+//       $("#vue_totalht").val(Number(somme).toLocaleString());
+//       $("#totalht").val(somme);
 
-      mntttc=0;
-      solde=0;
+//       mntttc=0;
+//       solde=0;
 
-      mntttc=  parseFloat((document.getElementById('totalht').value-(document.getElementById('remise').value)) + ((document.getElementById('totalht').value-(document.getElementById('remise').value))*(document.getElementById('tva').value)) ) ;
+//       mntttc=  parseFloat((document.getElementById('totalht').value-(document.getElementById('remise').value)) + ((document.getElementById('totalht').value-(document.getElementById('remise').value))*(document.getElementById('tva').value)) ) ;
 
-      $("#vue_totalttc").val(Number(mntttc).toLocaleString());
-      $("#totalttc").val(mntttc);
+//       $("#vue_totalttc").val(Number(mntttc).toLocaleString());
+//       $("#totalttc").val(mntttc);
 
-      solde=  parseFloat((document.getElementById('totalttc').value-(document.getElementById('avance').value)) ) ;
+//       solde=  parseFloat((document.getElementById('totalttc').value-(document.getElementById('avance').value)) ) ;
 
-      $("#vue_solde").val(Number(solde).toLocaleString());
-      $("#solde").val(solde);
-    }
+//       $("#vue_solde").val(Number(solde).toLocaleString());
+//       $("#solde").val(solde);
+//     }
     
     function mremises(){
       mntttc=0;
@@ -462,6 +462,35 @@ $(".taxetva").change(function() {
       $("#solde").val(solde);
     }
 
+    function mcalculTotal(pNum) {
+    console.log(pNum);
+
+    let last = parseFloat(document.getElementById('total' + pNum).value) || 0;
+    let prixAchat = parseFloat(document.getElementById('prixachat' + pNum).value) || 0;
+    let qteAchat = parseFloat(document.getElementById('qteachat' + pNum).value) || 0;
+
+    document.getElementById('total' + pNum).value = prixAchat * qteAchat;
+
+    let diff = parseFloat(document.getElementById('total' + pNum).value) - last;
+    somme += diff;
+
+    $("#vue_totalht").val(Number(somme).toLocaleString());
+    $("#totalht").val(somme);
+
+    let remise = parseFloat(document.getElementById('remise').value) || 0;
+    let tva = parseFloat(document.getElementById('tva').value) || 0;
+
+    let mntttc = parseFloat((somme - remise) + ((somme - remise) * tva));
+    $("#vue_totalttc").val(Number(mntttc).toLocaleString());
+    $("#totalttc").val(mntttc);
+
+    let avance = parseFloat(document.getElementById('avance').value) || 0;
+    let solde = parseFloat(mntttc - avance);
+
+    $("#vue_solde").val(Number(solde).toLocaleString());
+    $("#solde").val(solde);
+}
+
 
   var somme=0 ;
 var rowCount = 0;
@@ -476,42 +505,67 @@ $.get("/modificationVente/"+idvente, {
 }, function(datta) {
     var tables = datta;
     console.log("tabless", tables); 
-    
+    var produits = {{Illuminate\Support\Js::from($produits)}};
     $('#addedRows').attr("style", "display:block;");
 
     for ( i = 0; i < tables.length; i++) { 
      rowCount++;
-     var idpro = tables[i]["produit_id"];
-     console.log(idpro);
+    //  var idpro = tables[i]["produit_id"];
+    //  console.log(idpro);
     
        
   
      
-   content+='<div class="row" style="border:1px solid grey;"  id="rowCount' + rowCount +
-            '"><div class="col-md-3"><label for="checkin">Produit</label><select  onkeyup="calculTotal('+rowCount+')" onclick="calculTotal('+rowCount+')" type="text" id="libelle' + rowCount +
-            '" name="libelle' + rowCount + '" num="'+rowCount+'" required class="form-control  idarticle">' +
-            '@foreach($produits as $produit) <option value="{{$produit->id}}"> {{$produit->Designation}}</option> @endforeach </select></div>' +
-            '<div class="col-md-2"><label for="checkin">Qte Achat</label><input type="number" value="' + tables[i]["QteVente"] + '"  id="qteachat' + rowCount + '"  onkeyup="mcalculTotal('+rowCount+')" onclick="mcalculTotal('+rowCount+')"  class="form-control"></div>' +
-            '<div class="col-md-3"><label for="checkin">Prix Achat</label><input type="text" readonly value="' + tables[i]["PrixVente"] + '" id="prixachat' + rowCount + '" class="form-control"></div>' +
-            '<div class="col-md-3"><label for="checkin">Total</label><input type="number" readonly value="' + tables[i]["MontantVente"] + '" readonly  id="total' + rowCount + '" class="form-control"></div>'+
-            '<div class="col-md-1" style="margin-top:35px;" ><a href="javascript:void(0);" onclick="mremove(' +
-            rowCount + ');">X</a></div></div></div>' +
-            '<input type="hidden" name="compteur" value="' + rowCount + '">';
+    content += '<div class="row" style="border:1px solid grey;" id="rowCount' + rowCount + '">' +
+    '<div class="col-md-3">' +
+    '<label for="checkin">Produit</label>' +
+    '<select onkeyup="calculTotal(' + rowCount + ')" onclick="mcalculTotal(' + rowCount + ')" type="text" id="libelle' + rowCount + '" name="idproduit[]" num="' + rowCount + '" required class="form-control idarticle">';
+
+produits.forEach(function(produit) {
+    content += '<option value="' + produit.id + '"' + (produit.id === tables[i]["produit_id"] ? ' selected' : '') + '>' + produit.Designation + '</option>';
+});
+
+content += '</select></div>' +
+    '<div class="col-md-2">' +
+    '<label for="checkin">Qte Achat</label>' +
+    '<input type="number" name="nqte[]" value="' + tables[i]["QteVente"] + '" id="qteachat' + rowCount + '" onkeyup="mcalculTotal(' + rowCount + ')" onclick="mcalculTotal(' + rowCount + ')" class="form-control">' +
+    '</div>' +
+    '<div class="col-md-3">' +
+    '<label for="checkin">Prix Achat</label>' +
+    '<input type="text" name="myDataPrix[]" readonly value="' + tables[i]["PrixVente"] + '" id="prixachat' + rowCount + '" class="form-control">' +
+    '</div>' +
+    '<div class="col-md-3">' +
+    '<label for="checkin">Total</label>' +
+    '<input type="number" name="total[]" value="' + tables[i]["MontantVente"] + '" readonly id="total' + rowCount + '" class="form-control">' +
+    '</div>' +
+    '<div class="col-md-1" style="margin-top:35px;">' +
+    '<a href="javascript:void(0);" onclick="mremove(' + rowCount + ');">' +
+    '<i class="fa fa-trash" style="color:red"></i>' +
+    '</a></div></div>' +
+    '<input type="hidden" name="compteur" value="' + rowCount + '">';
+
             
             somme+=Number(tables[i]["MontantVente"]);
 
-    };
+          
+            
+        //     setTimeout(() => {
+        //    var selectElement = document.getElementByClass('libelle' + rowCount);
+        //    console.log('selectElement',selectElement);
+           
+        //    selectElement.querySelectorAll('option').forEach(option => {
+        //        if (option.value === idpro) {
+        //            option.selected = true;
+        //        }
+        //    });
+        //    }, 0);
+        };
+        
+        $("#addedRows").html(content);
+   // Vérifiez et appliquez après le rendu complet
 
-$("#addedRows").html(content);
 
-setTimeout(() => {
-    let selectElement = document.getElementById('libelle' + rowCount);
-    selectElement.querySelectorAll('option').forEach(option => {
-        if (option.value == idpro) {
-            option.selected = true;
-        }
-    });
-}, 0);
+
 
 
 $(".idarticle").change(function(){
@@ -519,11 +573,8 @@ $(".idarticle").change(function(){
                 var idarticle = $(this).val();
                 console.log("idart",num,idarticle);
         $.get("/rechercheArticle/"+idarticle,function(rep){ 
-          
-          ;
-             
+
                      console.log("rep",rep);
-                     
                      $("#prixachat"+num).val(rep.rep);
                 });
         
@@ -532,6 +583,46 @@ $(".idarticle").change(function(){
 
 })
 
+function addMoreRows(frm) {
+        rowCount++;
+        $('#addedRows').attr("style", "display:block;");
+
+        var recRow = '<div class="row" style="border:1px solid grey;"  id="rowCount' + rowCount +
+            '"><div class="col-md-3"><label for="checkin">Produit</label><select  onkeyup="mcalculTotal('+rowCount+')" onclick="mcalculTotal('+rowCount+')" type="text" id="libelle' + rowCount +
+            '" name="idproduit[]" num="'+rowCount+'" required class="form-control  idarticle">' +
+            '<option value="">Produit</option> @foreach($produits as $produit) <option value="{{$produit->id}}"> {{$produit->Designation}}</option> @endforeach </select></div>' +
+            '<div class="col-md-2"><label for="checkin">Qte Achat</label><input type="number" name="nqte[]" id="qteachat' + rowCount + '"  onkeyup="mcalculTotal('+rowCount+')" onclick="mcalculTotal('+rowCount+')"  class="form-control"></div>' +
+            '<div class="col-md-3"><label for="checkin">Prix Achat</label><input type="text" readonly name="myDataPrix[]" id="prixachat' + rowCount + '" class="form-control"></div>' +
+            '<div class="col-md-3"><label for="checkin">Total</label><input type="number" readonly name="total[]"  id="total' + rowCount + '" class="form-control"></div>'+
+            '<div class="col-md-1" style="margin-top:35px;" ><a href="javascript:void(0);" onclick="mremove(' +
+            rowCount + ');"><i class="fa fa-trash" style="color:red"></i> </a></div></div></div>' +
+            '<input type="hidden" name="compteur" value="' + rowCount + '">';
+
+        jQuery('#addedRows').append(recRow);
+        
+   $(".idarticle").change(function(){
+                var num = $(this).attr("num");
+                var idarticle = $(this).val();
+                console.log("idart",num,idarticle);
+        $.get("/rechercheArticle/"+idarticle,function(rep){ 
+          
+                     console.log("rep",rep);
+                     $("#prixachat"+num).val(rep.rep);
+                });
+        
+            });
+
+    }
+
+    function mavances() {
+
+solde = parseFloat((document.getElementById('totalttc').value - (document.getElementById('vue_avance').value)));
+avance =document.getElementById('vue_avance').value
+$("#vue_solde").val(Number(solde).toLocaleString());
+$("#solde").val(solde);
+$("#avance").val(avance);
+
+}
 function mremove(removeNum) {
         mntttc=0;
         

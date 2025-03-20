@@ -60,10 +60,10 @@ class CommandesController extends Controller
           $idcmmd= Commandes::insertGetId([
             'fournisseur_id'=> $request->fourniss,
             'Reference'=> $reference,
-            'Montant'=> $request->montant,
+            'Montant'=> $request->montantcmd,
             'Date'=> $request->date,
             'Etat'=> 1,
-            'user_id'=> 1,
+            'user_id'=> Auth::user()->id,
            ]);
 
            $i=0;
@@ -75,34 +75,25 @@ class CommandesController extends Controller
                 'produit_id'=> $idproduit[$i],
                 'commande_id'=> $idcmmd,
                 'Qte'=> $request->qtecmd[$i],
+                'QteApro'=> $request->qteapro[$i],
                 'prixachat'=> $request->prixachat[$i],
                 'user_id'=>  Auth::user()->id,
                ]);
+                        /////////////mise a jour du stock
+                $modif=Produits::findOrFail($idproduit[$i]);
+                $laststock = $modif->Stock;
+                $newstock = $laststock + $request->qteapro[$i];
+                $modif->update(['Stock'=> $newstock]);
 
               $i++;
            }
 
-           $j=0;
-           if($request->qteapro !=null){
             $idappro= Approvisionnement::insertGetId([
                 'Reference'=> $reference,
-                'Montant'=> $request->montant,
+                'Montant'=> $request->montantapro,
                 'Etat'=> 1,
-                'user_id'=> 1,
+                'user_id'=>Auth::user()->id,
                ]);
-
-               foreach($request->produit as $idproduit[])
-           {
-            DetailAppro::create([
-                'Reference'=> $reference,
-                'produit_id'=> $idproduit[$j],
-                'Qte'=> $request->qteapro[$j],
-                'approvisionnement_id'=> $idappro,
-                'user_id'=>  Auth::user()->id,
-               ]);
-               $j++;
-           }
-           }
 
 
            return redirect()->back()->with('success', "l'Enregistrement a été effectué avec success");
@@ -115,12 +106,14 @@ class CommandesController extends Controller
     {
         $command = Commandes::where('id', $id)->first();
         $commandes = DetailCommandes::where('commande_id', $id)->get();
+        $montantapro = Approvisionnement::select('Montant')->where('Reference',  $command->Reference)->value('Montant');
 
         $fournisseurs= Fournisseurs::all();
         $produits= Produits::all();
 
         return view('commande.deatils')->with([
-        'fournisseurs'=>$fournisseurs,'produits'=>$produits,'commandes'=>$commandes,'command'=>$command,
+        'fournisseurs'=>$fournisseurs,'produits'=>$produits,'commandes'=>$commandes,
+        'command'=>$command,'montantapro'=>$montantapro,
         ]);
 
     }
@@ -146,11 +139,30 @@ class CommandesController extends Controller
         $modif->update([
             'fournisseur_id'=> $request->fourniss,
             'Reference'=> $reference,
-            'Montant'=> $request->montant,
+            'Montant'=> $request->montantcmd,
             'Date'=> $request->date,
             'Etat'=> 1,
             'user_id'=> Auth::user()->id,
            ]);
+           $idappro=Approvisionnement::where('Reference', $reference)->first();
+           $idappro->update([
+            'Reference'=> $reference,
+            'Montant'=> $request->montantapro,
+            'Etat'=> 1,
+            'user_id'=> Auth::user()->id,
+           ]);
+
+           $modifdetailc=DetailCommandes::where('commande_id',$id)->get();
+           foreach($modifdetailc as $modifdetaiqte)
+           {
+             $produitqte=Produits::where('id',$modifdetaiqte->produit_id)->first();
+             $qteprod=$produitqte->Stock;
+             $lastprod = $modifdetaiqte->QteApro;
+             $newprod = $qteprod-$lastprod;
+             $produitqte->update(['Stock'=> $newprod]);
+           }
+
+
            DetailCommandes::where('commande_id', $id)->delete();
            $i=0;
            foreach($request->produit as $idproduit[])
@@ -161,13 +173,22 @@ class CommandesController extends Controller
                 'produit_id'=> $idproduit[$i],
                 'commande_id'=> $idcmmd,
                 'Qte'=> $request->qtecmd[$i],
+                'QteApro'=> $request->qteapro[$i],
                 'prixachat'=> $request->prixachat[$i],
                 'user_id'=> Auth::user()->id,
                ]);
 
-              $i++;
+
+                /////////////mise a jour du stock
+                $modif=Produits::findOrFail($idproduit[$i]);
+                $laststock = $modif->Stock;
+                $newstock = $laststock + $request->qteapro[$i];
+                $modif->update(['Stock'=> $newstock]);
      
+              $i++;
            }
+
+           
 
         return redirect()->back()->with('success', "l'Enregistrement a été modifié avec success");
     }

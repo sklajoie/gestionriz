@@ -221,19 +221,18 @@
                         <th >Prix Achat</th>
                         </tr>
                         <tr > 
-                          <td  id="col0">
-                            <select id="produit" name="produit[]" class="form-control" id="">
-                              <option value="">Produit</option>
-                              @foreach ($produits  as $produit )
+                          <td  style="width: 100px" id="col0">
+                             <select id="cproduit" name="produit[]" class="form-control">
+                              <option value="">Choix du Produit</option>
+                              @foreach ($produits as $produit )
                               <option value="{{$produit->id}}">{{$produit->Designation}}</option>
-                                
                               @endforeach
                              </select>
                             
                            </td>
-                          <td  id="col1"> <input type="number" onkeyup="calculTotal()" id="qtecmd" class="form-control" name="qtecmd[]" > </td>
-                          <td  id="col2"> <input type="number"  id="qteapro" class="form-control" name="qteapro[]" > </td>
-                          <td  id="col3"> <input type="number" onkeyup="calculTotal()" id="prixachat" class="form-control" name="prixachat[]" > </td>
+                          <td  id="col1"> <input type="number" onkeyup="calculTotalcmd()" onclick="calculTotalcmd()"id="qtecmd" class="form-control" name="qtecmd[]" > </td>
+                          <td  id="col2"> <input type="number"  id="qteapro" onkeyup="calculTotalcmd()" onclick="calculTotalcmd()" class="form-control" name="qteapro[]" > </td>
+                          <td  id="col3"> <input type="number" onkeyup="calculTotalcmd()" onclick="calculTotalcmd()" id="prixachat" class="form-control" name="prixachat[]" > </td>
                                 
                         </tr>  
                       </table> 
@@ -241,7 +240,8 @@
                               <table class="table table-bordered"> 
                                 <tr> 
                                   <td><input type="button" class="btn btn-success" value="+ LIGNE" onclick="addRows()" /></td> 
-                                  <td><label for="">Montant Total Commande</label> <input type="number" readonly id="montant" class="form-control" name="montant" ></td> 
+                                  <td><label for="">Montant Commande</label> <input type="number" readonly id="montantcmd" class="form-control" name="montantcmd" ></td> 
+                                  <td><label for="">Montant Approvisionnement</label> <input type="number" readonly id="montantapro" class="form-control" name="montantapro" ></td> 
                                   <td ><input type="button" class="btn btn-warning float-right" value="- LIGNE" onclick="deleteRows()" /></td> 
                                 </tr>  
                               </table> 

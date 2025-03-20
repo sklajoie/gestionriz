@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('Reference');
             $table->string('Qte');
+            $table->string('QteApro')->nullable();
             $table->string('prixachat')->nullable();
             $table->unsignedBigInteger('commande_id')->nullable();
             $table->foreign('commande_id')->references('id')->on('commandes')->onDelete('set null');
