@@ -39,6 +39,7 @@ Route::get('/modificationVente/{id}', [VentesController::class, 'modificationven
 Route::get('/rechercheArticle/{id}', [VentesController::class, 'recherchearticle'])->name('rechercheArticle');
 Route::get('/Registre-vente', [VentesController::class, 'registrevente'])->name('Registre-vente');
 Route::get('/Recherche-Registre', [VentesController::class, 'rechercheregistre'])->name('Recherche-Registre');
+Route::get('/Registre-Commande', [CommandesController::class, 'registrecommande'])->name('Registre-Commande');
 
 
 Route::resource('/Fiche-Ventes', VentesController::class);

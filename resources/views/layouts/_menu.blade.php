@@ -89,6 +89,12 @@
                   <p>Commandes</p>
                 </a>
               </li>
+              <li class="nav-item">
+                <a href="{{route('Registre-Commande')}}" class="nav-link {{ request()->routeIs('Registre-Commande*') ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Registre</p>
+                </a>
+              </li>
              
              
             </ul>

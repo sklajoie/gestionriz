@@ -200,4 +200,11 @@ class CommandesController extends Controller
     {
         //
     }
+
+    public function registrecommande()
+    {
+        $commandes = DetailCommandes::get();
+
+        return view('commande.registre')->with(['commandes'=>$commandes]);
+    }
 }
