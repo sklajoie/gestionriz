@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('Reference');
             $table->string('Montant');
             $table->string('Etat');
+            $table->float('qtecmmd')->nullable();
             $table->date('Date');
             $table->unsignedBigInteger('fournisseur_id')->nullable();
             $table->foreign('fournisseur_id')->references('id')->on('fournisseurs')->onDelete('set null');

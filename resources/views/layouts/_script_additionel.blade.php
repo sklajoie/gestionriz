@@ -265,6 +265,20 @@ content0 = " ";
                   `ident="${idproduit}"><i class="fa fa-cart-plus" aria-hidden="true"></i>+ Ajouter </button>` +
                   `</div></div></div>`;
           };
+          $(function() {
+            var Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000
+            });
+            Toast.fire({
+                icon: 'success',
+                title: 'Le produit a été ajouté au panier.'
+            })
+            });
+   
+ 
           $("#produit").html(content0);
       });
 
@@ -644,3 +658,234 @@ function mremove(removeNum) {
 
     }
   </script>
+
+  <script>
+    //////////////gestion de caisse
+    $(document).ready(function(){
+
+  $('#banque').hide();
+  $('#numcheque').hide();
+  $('#nummobile').hide();
+
+  $('#banquep').hide();
+  $('#numchequep').hide();
+  $('#nummobilep').hide();
+
+  $('#banquepr').hide();
+  $('#numchequepr').hide();
+  $('#nummobilepr').hide();
+  
+    $('.banquer').hide();
+  $('.numchequer').hide();
+  $('.nummobiler').hide();
+  
+$("#cash").on('click',function(){
+     
+        $('#nummobile').hide(); // Show with fade effect
+        $('#numcheque').hide(); // Show with fade effect
+        $('#banque').hide(); // Show with fade effect
+});
+
+$("#cheque").on('click',function(){
+      console.log('cheque',cheque);
+        $('#numcheque').fadeIn(); // Show with fade effect
+        $('#banque').fadeIn(); // Show with fade effect
+        $('#nummobile').hide();
+      });
+$("#virement").on('click',function(){
+      console.log('cheque',cheque);
+        $('#numcheque').fadeIn(); // Show with fade effect
+        $('#banque').fadeIn(); // Show with fade effect
+        $('#nummobile').hide();
+});
+$("#carte").on('click',function(){
+        $('#nummobile').fadeIn(); // Show with fade effect
+        $('#banque').hide(); // Show with fade effect
+        $('#numcheque').hide(); // Show with fade effect
+});
+
+////////////////
+$.ajaxSetup({
+          headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+          }
+      });
+      // Department Change
+      $('.type_mouvement').change(function(){
+
+         // Department id
+        var type_mouvement = $('#type_mouvement').val();
+         // Empty the dropdown
+         $('#naturemvmt').find('option').not(':first').remove();
+         console.log(type_mouvement);
+         // AJAX request 
+         $.ajax({
+           url: '/recherche-type-mvmt/' + type_mouvement,
+           type: 'GET',
+           dataType: 'json',
+           success: function(response){
+
+             var len = 0;
+             if(response['data'] != null){
+                len = response['data'].length;
+             }
+            
+             if(len > 0){
+                // Read data and create <option >
+                for(var i=0; i<len; i++){
+
+                  
+                   var idnat = response['data'][i].id;
+                   var name = response['data'][i].Nature;
+                   
+                   var option = "<option value='"+idnat+"'>"+name+"</option>";
+
+                   $("#naturemvmt").append(option); 
+                }
+             }
+
+           }
+         });
+      });
+
+      $('#naturemvmt').change(function(){
+
+// Department id
+var idnature = $('#naturemvmt').val();
+// Empty the dropdown
+$('#rubrique_mouvement').find('option').not(':first').remove();
+console.log(idnature);
+// AJAX request 
+$.ajax({
+  url: '/recherche-nature-mvmt/'+idnature,
+  type: 'get',
+  dataType: 'json',
+  success: function(response){
+
+    var len = 0;
+    if(response['data'] != null){
+       len = response['data'].length;
+    }
+   
+    if(len > 0){
+       // Read data and create <option >
+       for(var i=0; i<len; i++){
+
+          var idrub = response['data'][i].id;
+          var name = response['data'][i].Rubrique;
+          
+          var option = "<option value='"+idrub+"'>"+name+"</option>";
+
+          $("#rubrique_mouvement").append(option); 
+         //  $("#commentairetest").val(name); 
+       }
+    }
+
+  }
+});
+});
+
+$(".type_benef").change(function() {
+
+var typebenef = $('#type_benef').val();
+console.log(typebenef);
+var content3 = "";
+
+if (typebenef == "Membre") {
+    content3 = `<select class="form-control" name="beneficiare" id="beneficiare"><option value=""></option>` +
+        @foreach ( $employers as $membre )
+        `<option value="{{$membre->id}}">{{$membre->name}} ({{$membre->Contact}})</option>` +
+        @endforeach
+        `</select>`;
+
+} else if (typebenef == "Autre") {
+    content3 = `<input type="text" id="beneficiare" name="beneficiare" required class="form-control">`;
+
+};
+
+
+
+$("#Type_benefificiaire").html(content3);
+
+});
+
+    });
+  </script>
+
+<script >
+  var avancevente = {{ Illuminate\Support\Js::from($avancevente)  }};
+  var montantvente = {{ Illuminate\Support\Js::from($montantvente)  }};
+var xValues = ["janvier","fevrier","Mars","Avril","Mai","juin","Juillet","Aout","Septembre","Octobre","Novembre", "Decembre"];
+
+
+new Chart("myChart", {
+  type: "bar",
+  data: {
+    labels: xValues,
+    datasets: [{ 
+      data: montantvente,
+      borderColor: "green",
+      backgroundColor:"green",
+      label: "MONATANT VENTE",
+      fill: false
+    }, 
+    { 
+      data: avancevente,
+      borderColor: "red",
+      backgroundColor:"red",
+      label: "MONTANT AVANCE",
+      fill: false
+      
+    },
+    //  { 
+    //   data: reparationVehi,
+    //   borderColor: "red",
+    //   backgroundColor:"red",
+    //   label: "REPARATION VEHICULE",
+    //   fill: true
+    // }
+  ]
+  },
+  options: {
+    legend: {display: true}
+  }
+});
+
+
+$(".anneegf").on('change',function(){
+    $.ajaxSetup({
+          headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+          }
+      });
+        var _vm=$(this);
+        var _annee=$("#annee").val();
+        console.log(_annee);
+        var urlanne = "<?php echo url('/Annee-Graphe'); ?>";
+        $.ajax({
+          
+                url: urlanne,
+                type: "POST",
+                data:{
+                    'annee':_annee,
+                },
+                // dataType:'json',
+                success:  function(data){
+                location.reload(true);
+                        },
+
+            });
+  });
+function refcmmdappro(){
+
+  var refcmmd=$("#refcmmd").val();
+  console.log(refcmmd);
+  
+  $.get("/rechercheqtecommande/"+refcmmd,function(rep){ 
+          
+          console.log("rep",rep);
+          $("#qtecmmd").val(rep.rep);
+     });
+
+  };
+</script>

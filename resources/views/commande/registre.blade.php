@@ -51,10 +51,28 @@
 
             <div class="card">
               <div class="card-header" style="text-align:center; !important">
-                {{-- <h3 class="card-title " >REGISTRE COMMANDES
-                    <button type="button" class="btn btn-success" data-toggle="modal" data-target=".bd-example-modal-lg">MODIFIER <i class="fas fa-plus"></i></button>
-
-                </h3> --}}
+                <div style="margin-left: 5px">
+             
+                  <form action="{{route('Recherche-Registre-Commande')}}" method="GET">
+                     {!! csrf_field() !!} 
+                    <div class=" row col-sm-10 d-flex">
+                      
+                      <div class=" col-sm-4  flex-grow-1 mr-2 form-group">
+                      <label for="">DU</label>
+                        <input type="date" required  class="form-control" id="exampleFirstName" value="{{request()->date1}}" name="date1" >
+                      </div>
+                      <div class="col-sm-4  flex-grow-1 mr-2 form-group">
+                      <label for="">AU</label>
+                      <input type="date" required class="form-control"  id="exampleInputPassword" name="date2" value="{{request()->date2}}">
+                      </div>
+                      <div class="col-sm-2">
+                      <div class="form-group" style="margin-top:30px" >
+                      <input class="btn btn-primary" type="submit" name="submit" value="RECHERCHE" />
+                      </div>
+                      </div>
+                    </div>
+                  </form>
+                    </div>
               </div>
               <!-- /.card-header -->
               <div class="card-body">
@@ -65,7 +83,7 @@
                     <th>DATE</th>
                     <th>REFERENCE</th>
                     <th>PRODUIT</th>
-                    <th>QTE ACHAT</th>
+                    <th>QTE COMMANDE</th>
                     <th>QTE APRO</th>
                     <th>PRIX ACHAT</th>
                     <th>MONTANT</th>
@@ -73,9 +91,12 @@
                   </tr>
                   </thead>
                   <tbody>
-                    @php $command=0; $aprocommand=0; @endphp
+                    @php $command=0; $aprocommand=0; $ttqtecmmd=0; @endphp
                     @foreach ($commandes as $key=>$commande )
-                    @php $command +=$commande->prixachat * $commande->Qte; $aprocommand += $commande->prixachat * $commande->QteApro;  @endphp
+                    @php $command +=$commande->prixachat * $commande->Qte;
+                     $aprocommand += $commande->prixachat * $commande->QteApro; 
+                     $ttqtecmmd += $commande->Qte;
+                     @endphp
                     <tr>
                         <td>{{++$key}}</td>
                         <td>{{date('d-m-Y à H:i', strtotime($commande->created_at))}} </td>
@@ -94,10 +115,10 @@
                     <td > <span style="color: red">TOTAL</span> </td>
                     <td></td>
                     <td></td>
-                    <td><span style="color: red; font-size:bold;">APPROVISIONNEMENT</span></td>
-                    <td><span style="color: red; font-size:bold;"> {{$aprocommand}} </span></td>
                     <td></td>
-                    <td><span style="color: red; font-size:bold;">COMMANDE</span></td>
+                    <td><span style="color: red; font-size:bold;">{{$ttqtecmmd}}</span></td>
+                    <td><span style="color: red; font-size:bold;"> {{$aprocommand}} </span></td>
+                    <td><span style="color: red; font-size:bold;"></span></td>
                     <td><span style="color: red; font-size:bold;"> {{$command}} </span></td>
                   </tr>
                   </tbody>

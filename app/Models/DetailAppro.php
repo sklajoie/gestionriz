@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class DetailAppro extends Model
 {
-    protected $fillable = [ 'Reference','Qte','approvisionnement_id','produit_id','user_id' ];
+    protected $fillable = [ 'Reference','NombreSac','approvisionnement_id','produit_id','user_id' ];
 
     public function approvisionnement(){
         return $this->belongsTo(Approvisionnement::class);

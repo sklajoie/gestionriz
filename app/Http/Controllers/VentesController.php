@@ -269,4 +269,12 @@ class VentesController extends Controller
             'ventes'=>$ventes,'detailsv'=>$detailsv,
         ]);
     }
+
+    public function facturevente($id)
+    {
+        $ventes = Ventes::findOrFail($id)->first();
+        $detailvents= DetailVentes::where('vente_id', $id)->get();
+
+        return view('vente.facture',['ventes'=>$ventes,'detailvents'=>$detailvents]);
+    }
 }

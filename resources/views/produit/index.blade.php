@@ -63,6 +63,7 @@
                   <tr>
                     <th>N*</th>
                     <th>DESIGNATION</th>
+                    <th>KG/SAC</th>
                     <th>QTE</th>
                     <th>PRIX</th>
                     <th>DATE</th>
@@ -75,6 +76,7 @@
                     <tr>
                         <td>{{++$key}}</td>
                         <td> {{$produit->Designation}} </td>
+                        <td>{{$produit->qtesac}}</td>
                         <td>{{$produit->Stock}}</td>
                         <td> {{$produit->Prix}}</td>
                         <td>{{date('d-m-Y à H:i', strtotime($produit->created_at))}} </td>
@@ -114,14 +116,21 @@
                                         </div>
     
                                         <div class="form-group">
-                                            <label for="date_vit">Stock</label>
-                                            <input type="number" class="form-control" value="{{$produit->Stock}}"  placeholder="" name="stock" required>
+                                            <label for="date_vit">Qte en Kg/sac</label>
+                                            <input type="number" class="form-control" value="{{$produit->qtesac}}"  placeholder="" name="qtesac" required>
                                           </div>
                                           </div>
                                           <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="date_fin_vit">Prix</label>
                                             <input type="number" class="form-control" value="{{$produit->Prix}}"  placeholder="" name="prix" >
+                                          </div>
+                                          <div class="form-group d-flex flex-row justify-content-around" > 
+                                            <label style="margin-top: 20px" for="cmmd">Soumis aux Commandes ?  </label> 
+                                            <div class="col-md-4" style="margin-top: 20px">
+                                            <input type="checkbox" id="cmmd" {{$produit->soumisCommande ? 'checked' : ""}} value="1" class="form-control" placeholder="" name="cmmd" >
+                                          
+                                          </div>
                                           </div>
                                        
                                 </div>
@@ -188,15 +197,22 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="date_vit">Stock</label>
-                                    <input type="number" class="form-control"  placeholder="" name="stock" required>
+                                    <label for="">Qte en Kg/sac</label>
+                                    <input type="number" class="form-control" value="0"  placeholder="" name="qtesac" readonly>
                                   </div>
                                 </div>
                                 <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="date_fin_vit">Prix</label>
-                                    <input type="text" class="form-control" placeholder="" name="prix" >
+                                    <label for="">Prix</label>
+                                    <input type="text"  class="form-control" placeholder="" name="prix" >
                                   </div>
+                                <div class="form-group d-flex flex-row justify-content-around" > 
+                                  <label style="margin-top: 20px" for="cmmd">Soumis aux Commandes ?  </label> 
+                                  <div class="col-md-4" style="margin-top: 20px">
+                                  <input type="checkbox" value="1" id="cmmd" class="form-control" placeholder="" name="cmmd" >
+                                
+                                </div>
+                                </div>
                                
                         </div>
                             

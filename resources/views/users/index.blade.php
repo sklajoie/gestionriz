@@ -51,7 +51,7 @@
 
             <div class="card">
               <div class="card-header" style="text-align:center; !important">
-                <h3 class="card-title " >LISTE DES VEHICULES
+                <h3 class="card-title " >LISTE DES UTILISATEURS
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg">AJOUTER <i class="fas fa-plus"></i></button>
 
                 </h3>

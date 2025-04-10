@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Produits;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProduitsController extends Controller
 {
@@ -34,15 +35,17 @@ class ProduitsController extends Controller
     {
         $this->validate($request,[
             'designation' => 'required',
-            'stock' => 'required',
+            'qtesac' => 'required',
             'prix' => 'required',
            ]);
 
            Produits::create([
             'Designation'=> $request->designation,
-            'Stock'=> $request->stock,
+            'qtesac'=> $request->qtesac,
             'Prix'=> $request->prix,
+            'soumisCommande'=> $request->cmmd,
             'Etat'=> 1,
+            'user_id'=> Auth::user()->id,
            ]);
 
            return redirect()->back()->with('success', "l'Enregistrement a été effectué avec success");
@@ -72,15 +75,16 @@ class ProduitsController extends Controller
     {
         $this->validate($request,[
             'designation' => 'required',
-            'stock' => 'required',
+            'qtesac' => 'required',
             'prix' => 'required',
            ]);
 
            $modif=Produits::findOrFail($id);
            $modif->update([
             'Designation'=> $request->designation,
-            'Stock'=> $request->stock,
+            'qtesac'=> $request->qtesac,
             'Prix'=> $request->prix,
+            'soumisCommande'=> $request->cmmd,
            ]);
 
            return redirect()->back()->with('success', "l'Enregistrement a été modifié avec success");

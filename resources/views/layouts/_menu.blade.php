@@ -43,9 +43,13 @@
             </a>
           </li>
           
-          <li class="nav-item {{ request()->routeIs('Fiche-Ventes*') ? 'menu-open' : '' }}">
+          <li class="nav-item 
+          {{ request()->routeIs('Fiche-Ventes*') ? 'menu-open' : '' }}
+          {{ request()->routeIs('Ventes*') ? 'menu-open' : '' }}
+          {{ request()->routeIs('Registre-vente*') ? 'menu-open' : '' }}
+           ">
             <a href="#" class="nav-link {{ request()->routeIs('Fiche-Ventes*') ? 'active' : '' }}">
-              <i class="nav-icon fas fa-copy"></i>
+              <i class="nav-icon fas fa-cart-plus"></i>
               <p>
                 VENTES
                 <i class="fas fa-angle-left right"></i>
@@ -74,9 +78,12 @@
              
             </ul>
           </li>
-          <li class="nav-item {{ request()->routeIs('Commandes*') ? 'menu-open' : '' }}">
+          <li class="nav-item 
+          {{ request()->routeIs('Commandes*') ? 'menu-open' : '' }}
+          {{ request()->routeIs('Registre-Commande*') ? 'menu-open' : '' }}
+           ">
             <a href="#" class="nav-link {{ request()->routeIs('Commandes*') ? 'active' : '' }}">
-              <i class="nav-icon fas fa-copy"></i>
+              <i class="nav-icon fas fa-credit-card "></i>
               <p>
                 COMMANDES
                 <i class="fas fa-angle-left right"></i>
@@ -99,9 +106,38 @@
              
             </ul>
           </li>
+          <li class="nav-item 
+          {{ request()->routeIs('Approvisions*') ? 'menu-open' : '' }}
+          {{ request()->routeIs('Registre-Approvisions*') ? 'menu-open' : '' }}
+            ">
+            <a href="#" class="nav-link {{ request()->routeIs('Approvisions*') ? 'active' : '' }}">
+              <i class="nav-icon fas fa-anchor "></i>
+              <p>
+                APPROVISIONS
+                <i class="fas fa-angle-left right"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+            
+              <li class="nav-item">
+                <a href="{{route('Approvisions.index')}}" class="nav-link {{ request()->routeIs('Approvisions*') ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Liste</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{route('Registre-Approvisions')}}" class="nav-link {{ request()->routeIs('Registre-Approvisions*') ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Registre</p>
+                </a>
+              </li>
+             
+             
+            </ul>
+          </li>
           <li class="nav-item {{ request()->routeIs('Fournisseur*') ? 'menu-open' : '' }}">
             <a href="#" class="nav-link {{ request()->routeIs('Fournisseur*') ? 'active' : '' }}">
-              <i class="nav-icon fas fa-copy"></i>
+              <i class="nav-icon fas fa-handshake"></i>
               <p>
                 FOURNISSEURS
                 <i class="fas fa-angle-left right"></i>
@@ -119,7 +155,7 @@
           </li>
           <li class="nav-item {{ request()->routeIs('Produits*') ? 'menu-open' : '' }}">
             <a href="#" class="nav-link {{ request()->routeIs('Produits*') ? 'active' : '' }}">
-              <i class="nav-icon fas fa-copy"></i>
+              <i class="nav-icon fas fa-server "></i>
               <p>
                 PRODUITS
                 <i class="fas fa-angle-left right"></i>
@@ -135,10 +171,44 @@
              
             </ul>
           </li>
+          <li class="nav-item 
+          {{ request()->routeIs('Caisses*') ? 'menu-open' : '' }}
+          {{ request()->routeIs('Ressources*') ? 'menu-open' : '' }}
+          {{ request()->routeIs('Natures*') ? 'menu-open' : '' }}
+            ">
+            <a href="#" class="nav-link {{ request()->routeIs('Caisses*') ? 'active' : '' }}">
+              <i class="nav-icon fas fa-university"></i>
+              <p>
+                CAISSES
+                <i class="fas fa-angle-left right"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{{route('Caisses.index')}}" class="nav-link {{ request()->routeIs('Caisses*') ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Caisses</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{route('Ressources.index')}}" class="nav-link {{ request()->routeIs('Ressources*') ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Ressources</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{route('Natures.index')}}" class="nav-link {{ request()->routeIs('Natures*') ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Natures</p>
+                </a>
+              </li>
+             
+            </ul>
+          </li>
         
           <li class="nav-item {{ request()->routeIs('Users*') ? 'menu-open' : '' }}">
             <a href="#" class="nav-link {{ request()->routeIs('Users*') ? 'active' : '' }}">
-              <i class="nav-icon fas fa-copy"></i>
+              <i class="nav-icon fas fa-users"></i>
               <p>
                 UTILISATEURS
                 <i class="fas fa-angle-left right"></i>

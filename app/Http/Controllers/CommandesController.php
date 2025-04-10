@@ -21,7 +21,7 @@ class CommandesController extends Controller
     {
         $commandes= Commandes::all();
         $fournisseurs= Fournisseurs::all();
-        $produits= Produits::all();
+        $produits= Produits::where('soumisCommande', 1)->get();
         return view('commande.index')->with([
             'commandes'=>$commandes,'fournisseurs'=>$fournisseurs,'produits'=>$produits,
         ]);
@@ -62,6 +62,7 @@ class CommandesController extends Controller
             'Reference'=> $reference,
             'Montant'=> $request->montantcmd,
             'Date'=> $request->date,
+            'qtecmmd'=> $request->ttqtecmmd,
             'Etat'=> 1,
             'user_id'=> Auth::user()->id,
            ]);
@@ -75,26 +76,13 @@ class CommandesController extends Controller
                 'produit_id'=> $idproduit[$i],
                 'commande_id'=> $idcmmd,
                 'Qte'=> $request->qtecmd[$i],
-                'QteApro'=> $request->qteapro[$i],
+                'QteApro'=> 0,
                 'prixachat'=> $request->prixachat[$i],
                 'user_id'=>  Auth::user()->id,
                ]);
-                        /////////////mise a jour du stock
-                $modif=Produits::findOrFail($idproduit[$i]);
-                $laststock = $modif->Stock;
-                $newstock = $laststock + $request->qteapro[$i];
-                $modif->update(['Stock'=> $newstock]);
 
               $i++;
            }
-
-            $idappro= Approvisionnement::insertGetId([
-                'Reference'=> $reference,
-                'Montant'=> $request->montantapro,
-                'Etat'=> 1,
-                'user_id'=>Auth::user()->id,
-               ]);
-
 
            return redirect()->back()->with('success', "l'Enregistrement a été effectué avec success");
     }
@@ -106,14 +94,12 @@ class CommandesController extends Controller
     {
         $command = Commandes::where('id', $id)->first();
         $commandes = DetailCommandes::where('commande_id', $id)->get();
-        $montantapro = Approvisionnement::select('Montant')->where('Reference',  $command->Reference)->value('Montant');
-
         $fournisseurs= Fournisseurs::all();
-        $produits= Produits::all();
+        $produits= Produits::where('soumisCommande', 1)->get();
 
         return view('commande.deatils')->with([
         'fournisseurs'=>$fournisseurs,'produits'=>$produits,'commandes'=>$commandes,
-        'command'=>$command,'montantapro'=>$montantapro,
+        'command'=>$command,
         ]);
 
     }
@@ -134,58 +120,31 @@ class CommandesController extends Controller
         $modif=Commandes::findOrFail($id);
         $reference= $modif->Reference;
         $idcmmd= $id;
-        //dd($modif);
+        //dd($request->ttqtecmmd);
 
         $modif->update([
             'fournisseur_id'=> $request->fourniss,
-            'Reference'=> $reference,
             'Montant'=> $request->montantcmd,
             'Date'=> $request->date,
-            'Etat'=> 1,
-            'user_id'=> Auth::user()->id,
-           ]);
-           $idappro=Approvisionnement::where('Reference', $reference)->first();
-           $idappro->update([
-            'Reference'=> $reference,
-            'Montant'=> $request->montantapro,
-            'Etat'=> 1,
+            'qtecmmd'=> $request->ttqtecmmd,
             'user_id'=> Auth::user()->id,
            ]);
 
-           $modifdetailc=DetailCommandes::where('commande_id',$id)->get();
-           foreach($modifdetailc as $modifdetaiqte)
-           {
-             $produitqte=Produits::where('id',$modifdetaiqte->produit_id)->first();
-             $qteprod=$produitqte->Stock;
-             $lastprod = $modifdetaiqte->QteApro;
-             $newprod = $qteprod-$lastprod;
-             $produitqte->update(['Stock'=> $newprod]);
-           }
-
-
+           
            DetailCommandes::where('commande_id', $id)->delete();
-           $i=0;
-           foreach($request->produit as $idproduit[])
+          
+           foreach($request->produit as $key => $idproduit)
            {
 
                DetailCommandes::create([
                 'Reference'=> $reference,
-                'produit_id'=> $idproduit[$i],
+                'produit_id'=> $idproduit,
                 'commande_id'=> $idcmmd,
-                'Qte'=> $request->qtecmd[$i],
-                'QteApro'=> $request->qteapro[$i],
-                'prixachat'=> $request->prixachat[$i],
+                'Qte'=> $request->qtecmd[$key],
+                'prixachat'=> $request->prixachat[$key],
                 'user_id'=> Auth::user()->id,
                ]);
 
-
-                /////////////mise a jour du stock
-                $modif=Produits::findOrFail($idproduit[$i]);
-                $laststock = $modif->Stock;
-                $newstock = $laststock + $request->qteapro[$i];
-                $modif->update(['Stock'=> $newstock]);
-     
-              $i++;
            }
 
            
@@ -207,4 +166,40 @@ class CommandesController extends Controller
 
         return view('commande.registre')->with(['commandes'=>$commandes]);
     }
+    public function rechercheregistrecommande(Request $request)
+    {
+        $date1="$request->date1 00:00:00";
+        $date2="$request->date2 23:59:59";
+
+        $commandes = DetailCommandes::whereBetween('created_at', [$date1, $date2])->get();
+
+        return view('commande.registre')->with(['commandes'=>$commandes]);
+    }
+
+    public function facturecommende($id)
+    {
+        $commande = Commandes::findOrFail($id);
+        $detailcmmds= DetailCommandes::where('commande_id', $id)->get();
+          //  dd($commande, $id);
+        return view('commande.facture',['commande'=>$commande,'detailcmmds'=>$detailcmmds]);
+    }
+
+   
+
+    public function rechercheqtecommande($id)
+    {
+        //$rep = Produits::select('Prix')->where('id', $id)->first();
+        
+        $rep = Commandes::where('Reference', $id)->value('qtecmmd');
+        return response()->json(['rep' => $rep]);
+    }
+    public function rechercheKgArticle($id)
+    {
+        //$rep = Produits::select('Prix')->where('id', $id)->first();
+        
+        $rep = Produits::where('id', $id)->value('qtesac');
+        return response()->json(['rep' => $rep]);
+    }
+
+   
 }

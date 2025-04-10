@@ -64,7 +64,8 @@
 
     $("#example1").DataTable({
       "responsive": false, "lengthChange": true, "autoWidth": true,
-      "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+      "buttons": ["csv", "excel", "pdf", "print", "colvis"]
+      // "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
     }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
     $('.example2').DataTable({
       "paging": true,
@@ -101,6 +102,7 @@
       var cell = 'cell'+i;
       cell = row.insertCell(i);
       var copycel = document.getElementById('col'+i).innerHTML;
+      
       cell.innerHTML=copycel;
      
     }
@@ -121,7 +123,7 @@
 
   function calculTotalcmd() {
     let total = 0; // Initialisation du total
-    let totalApro = 0; // Initialisation du total
+    let ttqtecmm = 0; // Initialisation du total
     const table = document.getElementById("commandetbl"); // Référence au tableau principal
 
     // Parcourir toutes les lignes du tableau à partir de la deuxième ligne (ignorant l'en-tête)
@@ -137,17 +139,110 @@
         if (!isNaN(prixAchat) && !isNaN(qteCmd)) {
             total += prixAchat * qteCmd;
         }
-        if (!isNaN(prixAchat) && !isNaN(qteAPro)) {
-            totalApro += prixAchat * qteAPro;
+        if (!isNaN(qteCmd)) {
+          ttqtecmm += qteCmd;
         }
     }
 
     // Afficher le montant total dans le champ "montant"
     document.getElementById("montantcmd").value = total.toFixed(2); // Formater avec deux décimales
-    document.getElementById("montantapro").value = totalApro.toFixed(2); // Formater avec deux décimales
+    document.getElementById("ttqtecmmd").value = ttqtecmm.toFixed(2); // Formater avec deux décimales
 
     console.log("Montant total : " + total);
 }
+
+
+//   function calculTotalappro() {
+
+    
+
+//     let total = 0; // Initialisation du total
+//     let qtettkg = 0; // Initialisation du total
+//     const table = document.getElementById("commandetbl"); // Référence au tableau principal
+
+//     // Parcourir toutes les lignes du tableau à partir de la deuxième ligne (ignorant l'en-tête)
+//     for (let i = 1; i < table.rows.length; i++) {
+//         let row = table.rows[i];
+
+//         // Récupérer les valeurs de "Prix Achat" et "Quantité Commandée" dans la ligne actuelle
+//         let typesac = parseFloat(row.cells[1].querySelector("input").value);
+//         let nbrsac = parseFloat(row.cells[2].querySelector("input").value);
+//         // let qtettkg = parseFloat(row.cells[3].querySelector("input").value);
+//         var qtekg = typesac * nbrsac;
+//         // Ajouter au total uniquement si les valeurs sont valides
+//         if ( !isNaN(nbrsac)) {
+//             total += nbrsac;
+//         }
+//         if (!isNaN(qtekg)) {
+//           qtettkg += qtekg ;
+//         }
+//     }
+//     $("#qtekg").val(qtekg);
+//     // Afficher le montant total dans le champ "montant"
+//     document.getElementById("nombrettsac").value = total.toFixed(2); // Formater avec deux décimales
+//     document.getElementById("qtettkg").value = qtettkg.toFixed(2); // Formater avec deux décimales
+
+//     // console.log("Montant total : " + total);
+// }
+
+function calculTotalappro() {
+    let total = 0; // Total des sacs
+    let qtettkg = 0; // Quantité totale en Kg
+
+    const table = document.getElementById("commandetbl"); // Référence au tableau principal
+    let qtecmmd = document.getElementById("qtecmmd").value; // Référence au tableau principal
+
+    // Parcourir toutes les lignes du tableau à partir de la deuxième ligne (ignorer l'en-tête)
+    for (let i = 1; i < table.rows.length; i++) {
+        let row = table.rows[i];
+
+        // Récupérer les valeurs de "Type de sac" et "Nombre de sacs" dans la ligne actuelle
+        let typesac = parseFloat(row.cells[1].querySelector("input").value) || 0;
+        let nbrsac = parseFloat(row.cells[2].querySelector("input").value) || 0;
+
+        // Calculer la quantité en Kg pour la ligne actuelle
+        let qtekg = typesac * nbrsac;
+
+        // Ajouter au total si la quantité est valide
+        if (!isNaN(nbrsac)) {
+            total += nbrsac;
+        }
+        if (!isNaN(qtekg)) {
+            qtettkg += qtekg;
+
+            // Mettre à jour le champ qtekg de la ligne actuelle
+            row.cells[3].querySelector("input").value = qtekg.toFixed(2);
+        }
+        if(qtettkg > qtecmmd)
+        {
+          alert("La quantite d'approvisinnement est supperieur à la quantite de commande. Merci de bien verrifier!!!");
+        }
+    }
+
+
+    // Mettre à jour les champs de totaux dans le tableau des résumés
+    document.getElementById("nombrettsac").value = total.toFixed(2);
+    document.getElementById("qtettkg").value = qtettkg.toFixed(2);
+}
+
+
+
+
+$(".parentContainer").on("change", "#cproduit", function() {
+
+      var idarticle = $(this).val();
+      var row = $(this).closest("tr"); // Trouve la ligne parente
+      var num = row.index(); // Indice de la ligne (si nécessaire)
+      console.log("idart",num,idarticle);
+
+        $.get("/rechercheKgArticle/"+idarticle,function(rep){ 
+          
+                     console.log("rep",rep);
+                     row.find("#typesac").val(rep.rep);
+                    //  $("#prixachat"+num).val(rep.rep);
+                });
+        
+            });
 
   </script>
 @include('layouts._script_additionel')

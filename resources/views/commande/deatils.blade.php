@@ -93,7 +93,7 @@
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td></td>
+                    <td><span style="color: red; font-size:bold;"> {{$command->qtecmmd}} </span></td>
                     <td></td>
                     <td><span style="color: red; font-size:bold;"> {{$command->Montant}} </span></td>
                   </tr>
@@ -187,7 +187,7 @@
                             
                            </td>
                           <td  id="col1"> <input type="number" value="{{$commande->Qte}}" onclick="calculTotalcmd()" onkeyup="calculTotalcmd()" id="qtecmd" class="form-control" name="qtecmd[]" > </td>
-                          <td  id="col2"> <input type="number"  id="qteapro" onkeyup="calculTotalcmd()" onclick="calculTotalcmd()" value="{{$commande->QteApro}}" class="form-control" name="qteapro[]" > </td>
+                          <td  id="col2"> <input type="number" readonly id="qteapro" onkeyup="calculTotalcmd()" onclick="calculTotalcmd()" value="{{$commande->QteApro}}" class="form-control" name="qteapro[]" > </td>
                           <td  id="col3"> <input type="number" onkeyup="calculTotalcmd()" onclick="calculTotalcmd()" value="{{$commande->prixachat}}" id="prixachat" class="form-control" name="prixachat[]" > </td>
                                 
                         </tr>  
@@ -198,8 +198,8 @@
                                 <tr> 
                                   <td><input type="button" class="btn btn-success" value="+ LIGNE" onclick="addRows()" /></td> 
                                   <td><label for="">Montant Total Commande</label> <input type="number" value="{{$command->Montant}}" readonly id="montantcmd" class="form-control" name="montantcmd" ></td> 
-                                  <td><label for="">Montant Total Commande</label> <input type="number" value="{{$montantapro}}" readonly id="montantapro" class="form-control" name="montantapro" ></td> 
-                                  <td ><input type="button" class="btn btn-warning float-right" value="- LIGNE" onclick="deleteRows()" /></td> 
+                                  <td><label for="">Quantité Total</label> <input type="number" readonly id="ttqtecmmd" value="{{$command->qtecmmd}}" class="form-control" name="ttqtecmmd" ></td> 
+                                  <td ><input type="button" class="btn btn-warning float-right" value="- LIGNE" onclick="deleteRows(),calculTotalcmd()" /></td> 
                                 </tr>  
                               </table> 
                     </div>

@@ -52,7 +52,7 @@
             <div class="card">
               <div class="card-header" style="text-align:center; !important">
                 <h3 class="card-title " >LISTE VENTES
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg">AJOUTER <i class="fas fa-plus"></i></button>
+                    {{-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg">AJOUTER <i class="fas fa-plus"></i></button> --}}
 
                 </h3>
               </div>
@@ -76,6 +76,7 @@
                     </div>
                     </div>
                   </div>
+                </form>
                   </div>
 
               <!-- /.card-header -->

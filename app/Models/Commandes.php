@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Commandes extends Model
 {
-    protected $fillable = [ 'Reference','Montant','Date','fournisseur_id','Etat','user_id' ];
+    protected $fillable = [ 'Reference','Montant','Date','fournisseur_id','Etat','user_id','qtecmmd' ];
 
     public function fournisseur(){
         return $this->belongsTo(Fournisseurs::class);

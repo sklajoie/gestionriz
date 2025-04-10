@@ -7,5 +7,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class Approvisionnement extends Model
 {
-    protected $fillable = [ 'Reference','Montant','Etat','user_id' ];
+    protected $fillable = [ 'Reference','NbrTotalSac','qteTotalkg','Etat','user_id','Refcmmd', ];
 }

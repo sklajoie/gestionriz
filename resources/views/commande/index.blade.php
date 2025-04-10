@@ -81,8 +81,11 @@
                         <td>
                           <div  style="display:flex; flex-direction:row; ">
                             {{-- <button type="button" class="btn btn-success btn-xs m-1" data-toggle="modal" data-target=".modifiassurance{{$commande->id}}"> <i class="fas fa-edit"></i>Modifier</button> --}}
-                            <a href="{{route('Commandes.show',$commande->id)}}" class="btn btn-xs btn-primary" >
-                              <i class="fa fa-eye"></i> Détail 
+                            <a href="{{route('Commandes.show',$commande->id)}}" class="btn btn-xs btn-success m-1" >
+                              <i class="fa fa-edit"></i> Détail 
+                          </a> 
+                            <a href="{{route('Facture-Commande',$commande->id)}}" target="_blank" class="btn btn-xs btn-info m-1" >
+                              <i class="fa fa-eye"></i> Facture 
                           </a> 
                             {{-- <a href="javascript:;" class="btn btn-xs btn-danger sa-delete m-1" data-form-id="category-delete-{{$commande->id}}">
                               <i class="fa fa-trash"></i> Supprimer
@@ -96,54 +99,7 @@
                           </div>
                           </td>
                     </tr>
-                    <div class="modal fade modifiassurance{{$commande->id}}" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-lg">
-                            <div class="modal-content">
-                              <div class="modal-header">
-                                  <h5 class="modal-title" id="exampleModalLabel">MODIFIER LA COMMANDE</h5>
-                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                  </button>
-                                </div>
-                            <div class="modal-body">
-                            <form  class="form-horizontal style-form" enctype="multipart/form-data"  action="{{route('Commandes.update',$commande->id )}}" method="POST">
-                                @csrf
-                                @method('PUT')
-                                <div class="row col-md-12">
-                                    <div class="col-md-6">
-                                      <div class="form-group">
-                                        <label for="conducteur">Fournisseur</label>
-                                       <select name="fourniss" class="form-control" id="">
-                                        <option value="">Fournisseur</option>
-                                        @foreach ($fournisseurs  as $fournisse )
-                                    <option {{$commande->fournisseur_id === $fournisse->id ? 'selected' : ""}} value="{{$fournisse->id}}">{{$fournisse->Nom}} {{$fournisse->Contact}}</option>
-                                      
-                                    @endforeach
-                                       </select>
-                                    </div>
-    
-                                  </div>
-                                  <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label for="date_vit">Date</label>
-                                                <input type="date" class="form-control"  placeholder="" name="date" required>
-                                              </div>
-                                       
-                                       
-                                </div>
-                               
-                            </div>
-                           
-                            {{-- <input type="hidden" class="form-control"  placeholder="" name="idvehecule" > --}}
-                         
-                             <div class="form-group" style="text-align: center;">
-                            <button type="submit"  class="btn btn-danger"  >Modifier</button>
-                          </div>
-                                       </form>
-                          </div>
-                        </div>
-                      </div>
-                      </div>
+                   
                     @endforeach
                   </tbody>
                   
@@ -217,12 +173,12 @@
                         <tr>
                         <th >Produit</th>
                         <th >Qte Commande</th>
-                        <th >Qte Aprovisionnement</th>
+                        <th ></th>
                         <th >Prix Achat</th>
                         </tr>
                         <tr > 
-                          <td  style="width: 100px" id="col0">
-                             <select id="cproduit" name="produit[]" class="form-control">
+                          <td  id="col0">
+                             <select id="cproduit" name="produit[]" class="cproduit form-control">
                               <option value="">Choix du Produit</option>
                               @foreach ($produits as $produit )
                               <option value="{{$produit->id}}">{{$produit->Designation}}</option>
@@ -231,7 +187,7 @@
                             
                            </td>
                           <td  id="col1"> <input type="number" onkeyup="calculTotalcmd()" onclick="calculTotalcmd()"id="qtecmd" class="form-control" name="qtecmd[]" > </td>
-                          <td  id="col2"> <input type="number"  id="qteapro" onkeyup="calculTotalcmd()" onclick="calculTotalcmd()" class="form-control" name="qteapro[]" > </td>
+                          <td  id="col2"> <input type="hidden"  id="qteapro" onkeyup="calculTotalcmd()" onclick="calculTotalcmd()" value="0" class="form-control" name="qteapro[]" > </td>
                           <td  id="col3"> <input type="number" onkeyup="calculTotalcmd()" onclick="calculTotalcmd()" id="prixachat" class="form-control" name="prixachat[]" > </td>
                                 
                         </tr>  
@@ -241,8 +197,8 @@
                                 <tr> 
                                   <td><input type="button" class="btn btn-success" value="+ LIGNE" onclick="addRows()" /></td> 
                                   <td><label for="">Montant Commande</label> <input type="number" readonly id="montantcmd" class="form-control" name="montantcmd" ></td> 
-                                  <td><label for="">Montant Approvisionnement</label> <input type="number" readonly id="montantapro" class="form-control" name="montantapro" ></td> 
-                                  <td ><input type="button" class="btn btn-warning float-right" value="- LIGNE" onclick="deleteRows()" /></td> 
+                                  <td><label for="">Total Quantité</label> <input type="number" readonly id="ttqtecmmd" class="form-control" name="ttqtecmmd" ></td> 
+                                  <td ><input type="button" class="btn btn-warning float-right" value="- LIGNE" onclick="deleteRows(),calculTotalcmd()" /></td> 
                                 </tr>  
                               </table> 
                     </div>

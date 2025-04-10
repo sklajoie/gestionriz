@@ -14,7 +14,9 @@ return new class extends Migration
         Schema::create('approvisionnements', function (Blueprint $table) {
             $table->id();
             $table->string('Reference');
-            $table->string('Montant');
+            $table->string('Refcmmd');
+            $table->string('qteTotalkg');
+            $table->string('NbrTotalSac');
             $table->string('Etat');
             $table->unsignedBigInteger('user_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');

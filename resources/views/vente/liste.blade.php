@@ -52,7 +52,7 @@
             <div class="card">
               <div class="card-header" style="text-align:center; !important">
                 <h3 class="card-title " >LISTE VENTES
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg">AJOUTER <i class="fas fa-plus"></i></button>
+                    {{-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg">AJOUTER <i class="fas fa-plus"></i></button> --}}
 
                 </h3>
               </div>
@@ -86,9 +86,14 @@
                         <td>{{$vente->Client}} {{$vente->Contact}}</td>
                         <td>{{$vente->Etat}}</td>
                         <td> 
+                          <div  style="display:flex; flex-direction:row; ">
                            <a href="{{route('Fiche-Ventes.show',$vente->id)}}" class="btn btn-xs btn-success m-1">
                               <i class="fa fa-edit"></i> Modifier
                           </a> 
+                           <a href="{{route('Facture-Vente',$vente->id)}}" target="_blank" class="btn btn-xs btn-info m-1">
+                              <i class="fa fa-eye"></i> Facture
+                          </a> 
+                        </div>
                         </td>
                        
                     </tr>
